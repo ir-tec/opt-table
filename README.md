@@ -117,9 +117,9 @@ For detailed usage and customization instructions, check out the official docume
 
 This package is open-source and available under the [MIT License](LICENSE).
 
-## Contributing
+<!-- ## Contributing
 
-We welcome contributions from the community. Please read our [Contribution Guidelines](CONTRIBUTING.md) for more information on how to get started.
+We welcome contributions from the community. Please read our [Contribution Guidelines](CONTRIBUTING.md) for more information on how to get started. -->
 
 ## Issues
 
