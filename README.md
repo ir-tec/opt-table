@@ -130,4 +130,4 @@ If you encounter any issues or have feature requests, please submit them on our 
 
 "opt-table" is developed and maintained by [Amin Hoseiny](https://github.com/ir-tec).
 
-Happy tabling with "opt-table"! 🚀
+Happy tabling with opt-table! 🚀
