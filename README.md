@@ -1,6 +1,3 @@
-Certainly, here's a revised README.md with a section indicating that the "opt-table" package is written in TypeScript:
-
-```markdown
 # opt-table
 
 "opt-table" is a versatile and customizable React table package built with [Material-UI](https://mui.com/) and [Framer Motion](https://www.framer.com/motion/). It provides a feature-rich table component for your React applications, including support for pagination, collapsible rows, sorting, and a responsive design.
@@ -28,8 +25,8 @@ npm install opt-table @mui/material framer-motion
 ## Usage
 
 ```jsx
-import React from 'react';
-import {OptTable} from 'opt-table';
+import React from "react";
+import { OptTable } from "opt-table";
 
 function MyTable() {
   // Your data source
@@ -85,6 +82,8 @@ If you encounter any issues or have feature requests, please submit them on our 
 "opt-table" is developed and maintained by [Amin Hoseiny](https://github.com/ir-tec).
 
 Happy tabling with "opt-table"! 🚀
+
 ```
 
 <!-- This section emphasizes the TypeScript support of "opt-table" and provides a brief statement about its advantages for TypeScript users. -->
+```
