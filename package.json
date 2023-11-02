@@ -72,6 +72,13 @@
     "material ui table",
     "material-ui-table",
     "mui-table",
-    "framer-mui-table"
-  ]
+    "framer-mui-table",
+    "opt-table",
+    "optTable",
+    "opttable"
+  ],
+  "repository": {
+    "url": "https://github.com/ir-tec/opt-table.git",
+    "type": "git"
+  }
 }

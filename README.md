@@ -18,7 +18,7 @@ opt-table is a versatile and customizable React table package built with [Materi
 
 - **table_header_list:** An array of objects with the following properties.
   ```jsx
-  type table_header = {
+  type tableHeaderProps = {
     width?: string | number,
     is_server_side?: boolean,
     has_details_penel?: boolean,
@@ -77,25 +77,26 @@ function MyTable() {
 
   // Define columns
 
-  const table_head_list = headerProps[
-
+  const table_head_list = [
     /*
-      an array of object with headerProps types
+      an array of object with tableHeaderProps types
 
     */
-
   ];
 
-  return <OptTable
-  data={data}
-  table_head_list={columns}
-  default_sort="name"
-  has_pagination={true}
-  DetailsPanel={[
-    {table_key:"name",Component:ProfileDetailPanel},
-    {table_key:"resume",Component:ResumeDetailPanel},
-  ]}
-  container_style={{border:"1px solid #999"}}/>;
+  return (
+    <OptTable
+      data={data}
+      table_head_list={columns}
+      default_sort="name"
+      has_pagination={true}
+      DetailsPanel={[
+        { table_key: "name", Component: ProfileDetailPanel },
+        { table_key: "resume", Component: ResumeDetailPanel },
+      ]}
+      container_style={{ border: "1px solid #999" }}
+    />
+  );
 }
 ```
 

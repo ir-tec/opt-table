@@ -1,12 +1,12 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { CustomTable } from "../components/table/table_screen";
+import { OptTable } from "../components/table/table_screen";
 import TestDetailsPanel from "../components/table/test_details_panel";
 import TestDetailsPanels from "../components/table/test_2_details_panel";
 
 const meta: Meta = {
   title: "Table",
-  component: CustomTable,
-} satisfies Meta<typeof CustomTable>;
+  component: OptTable,
+} satisfies Meta<typeof OptTable>;
 
 export default meta;
 
