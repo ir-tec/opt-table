@@ -39,13 +39,12 @@ export function OptTable<T>(props: OptTableInterface<T>) {
     (item, i) => item.table_key === current_row?.table_key
   );
 
-
   const Comp = Detail?.Component;
   return (
     <Grid
       style={{
         transition: "0.4s",
-        height: "400px",
+        height: "100%",
         direction: props.options?.direction,
         ...props.container_style,
       }}
@@ -269,6 +268,7 @@ export function OptTable<T>(props: OptTableInterface<T>) {
                           paddingBottom: 0,
                           paddingTop: 0,
                           width: "100%",
+                          padding: 0,
                         }}
                       >
                         <Box
@@ -283,12 +283,13 @@ export function OptTable<T>(props: OptTableInterface<T>) {
                             {!!Comp && current_row?.index === i && (
                               <motion.div
                                 key={current_row.table_key}
-                                initial={{ height: 0, opacity: 0 }}
+                                initial={{ height: 0, opacity: 0, y: 24 }}
                                 animate={{
                                   opacity: 1,
+                                  y: 0,
                                   height: "fit-content",
                                 }}
-                                exit={{ opacity: 0, height: 0 }}
+                                exit={{ opacity: 0, height: 0, y: 24 }}
                               >
                                 <Comp
                                   is_open={current_row?.index === i}
