@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "lib": ["ES5", "ES2015", "ES2016", "DOM", "ESNext"],
+    "types": ["node"],
+    "moduleResolution": "node",
+    "allowJs": true,
+    // "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "target": "ES6",
+    "module": "ES2015",
+    "strict": true,
+    "sourceMap": true,
+    "outDir": "dist/esm"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}
