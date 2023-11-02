@@ -86,7 +86,16 @@ function MyTable() {
 
   ];
 
-  return <OptTable data={data} table_head_list={columns} has_pagination container_style={{border:"1px solid black"}}/>;
+  return <OptTable
+  data={data}
+  table_head_list={columns}
+  default_sort="name"
+  has_pagination={true}
+  DetailsPanel={[
+    {table_key:"name",Component:ProfileDetailPanel},
+    {table_key:"resume",Component:ResumeDetailPanel},
+  ]}
+  container_style={{border:"1px solid #999"}}/>;
 }
 ```
 
@@ -94,15 +103,15 @@ Please refer to the official documentation for more details and customization op
 
 ## TypeScript Support
 
-"opt-table" is developed using TypeScript, providing strong type checking and improved development experiences for TypeScript users.
+opt-table is developed using TypeScript, providing strong type checking and improved development experiences for TypeScript users.
 
-## Usage with TypeScript
+<!-- ## Usage with TypeScript
 
-When using "opt-table" in a TypeScript project, you can take full advantage of type safety and autocomplete for props and data structures. Make sure to include TypeScript definitions when importing the package.
+When using "opt-table" in a TypeScript project, you can take full advantage of type safety and autocomplete for props and data structures. Make sure to include TypeScript definitions when importing the package. -->
 
-## Documentation
+<!-- ## Documentation
 
-For detailed usage and customization instructions, check out the official documentation [here](#).
+For detailed usage and customization instructions, check out the official documentation [here](#). -->
 
 ## License
 
@@ -121,8 +130,3 @@ If you encounter any issues or have feature requests, please submit them on our 
 "opt-table" is developed and maintained by [Amin Hoseiny](https://github.com/ir-tec).
 
 Happy tabling with "opt-table"! 🚀
-
-```
-
-<!-- This section emphasizes the TypeScript support of "opt-table" and provides a brief statement about its advantages for TypeScript users. -->
-```
