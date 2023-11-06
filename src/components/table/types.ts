@@ -1,3 +1,4 @@
+import { Ref } from "react";
 export interface TableHeaderInterface<T> {
   width?: string | number;
   is_server_side?: boolean;
@@ -7,8 +8,9 @@ export interface TableHeaderInterface<T> {
   Render?: React.FunctionComponent<{ renderData: T }>;
   title: string | undefined;
   table_key: string;
-  align: "center" | "left" | "right" | "inherit" | "justify" | undefined;
+  align?: "center" | "left" | "right" | "inherit" | "justify" | undefined;
   sortable?: boolean;
+  editable?: boolean;
 }
 
 export interface OptTableInterface<T> {
@@ -16,7 +18,7 @@ export interface OptTableInterface<T> {
    * An array used as table header
    */
   table_head_list: TableHeaderInterface<T>[];
-  options?: options;
+  options?: options<T>;
   has_pagination?: boolean;
   container_style?: React.CSSProperties;
   table_zIndex?: number;
@@ -31,10 +33,12 @@ export interface DetailPanelProps<T> {
     rowData: T | undefined;
   }>;
 }
-export interface options {
-  action_title?: string;
-  direction: "rtl" | "ltr";
+export interface options<T> {
+  action_cell_title?: string;
+  direction?: "rtl" | "ltr";
+  newDataHandler?: (data: T) => Promise<T>;
 }
+export type RowDataType<T> = T | {};
 
 export interface CustomPaginationProps {
   totalIncome: number;
@@ -42,4 +46,15 @@ export interface CustomPaginationProps {
   totalDocs: number;
   perPage: number;
   rowsPerPageOptions: number[];
+}
+
+export interface useAddRowProps<T> {
+  data: T[];
+  options?: options<T>;
+  ref: Ref<OptTableRefProps<T> | null>;
+}
+
+export interface OptTableRefProps<T> {
+  addNewRow: () => void;
+  newRowDataManager?: () => Promise<T>;
 }

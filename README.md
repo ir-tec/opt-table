@@ -4,6 +4,8 @@ opt-table is a versatile and customizable React table package built with [Materi
 
 ## Features
 
+- **َAdd Rows:** Add new Row will be implemented by providing a Promise to options for newDataHandler method an accessing the refs of table .
+
 - **Pagination:** Easily implement pagination with options for the number of rows per page and navigation controls.
 
 - **Collapsible Rows:** Make your table more interactive by allowing users to expand and collapse rows for additional details.
@@ -38,7 +40,6 @@ opt-table is a versatile and customizable React table package built with [Materi
   type detailPanelProps = {
     // you should specify a table key from your data object ,so when that cell is clicked collapse table will opens
     table_key: string,
-
     // a component to be render as a detail panel ,this component will recive an ebject with the row data
     Component: React.FunctionComponent,
   };
@@ -50,8 +51,23 @@ opt-table is a versatile and customizable React table package built with [Materi
 - **options:** awailable options for table so far :
 
 ```jsx
-type optionType = {
+type optionType<T> = {
+  //
+  // Set The direction of the table
   direction: "rtl" | "ltr",
+  //
+  // By accesing this method from ref an calling it .table will go into add new row mode
+  newDataHandler: (result: T) => Promise<T>,
+};
+```
+- **ref:** to access table methods :
+
+```jsx
+type OptTableRefProps<T> = {
+
+  //
+  // By accesing this method from ref an calling it , table will toggles between add new rows mode
+  addNewRow: () => Void,
 };
 ```
 

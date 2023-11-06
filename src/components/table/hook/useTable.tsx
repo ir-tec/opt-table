@@ -3,12 +3,14 @@ import { CustomPaginationProps, OptTableInterface } from "../types";
 import { getComparator, stableSort } from "../table_utils";
 
 function useTable<T>(props: OptTableInterface<T>) {
+
   const [order, setOrder] = React.useState<"desc" | "asc">("asc");
   const [orderBy, setOrderBy] = React.useState<keyof T>(props.default_sort);
   const [current_row, set_current_row] = React.useState<{
     index: number;
     table_key: string;
   } | null>(null);
+ 
 
   const [pagination_props, set_pagination_props] =
     React.useState<CustomPaginationProps>({
@@ -43,11 +45,11 @@ function useTable<T>(props: OptTableInterface<T>) {
     visibleRows,
     pagination_props.page,
     pagination_props.perPage
-  ).filter((item, i) => i <= pagination_props.perPage);
+  )?.filter((item, i) => i <= pagination_props.perPage);
   function paginate<T>(data: T[], currentPage: number, pageSize: number): T[] {
     const startIndex = currentPage * pageSize;
     const endIndex = startIndex + pageSize;
-    return data.slice(startIndex, endIndex);
+    return data?.slice(startIndex, endIndex);
   }
 
   return {
@@ -59,7 +61,7 @@ function useTable<T>(props: OptTableInterface<T>) {
     set_current_row,
     pagination_props,
     set_pagination_props,
-    total_data: props.data.length,
+    total_data: props.data?.length,
   };
 }
 
