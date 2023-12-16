@@ -57,7 +57,7 @@ type optionType<T> = {
   direction: "rtl" | "ltr",
   //
   // By accesing this method from ref an calling it .table will go into add new row mode
-  newDataHandler: (result: T) => Promise<T>,
+  newDataHandler: (result: T) => Promise<boolean>,
 };
 ```
 - **ref:** to access table methods :
@@ -76,7 +76,7 @@ type OptTableRefProps<T> = {
 Install opt-table and its dependencies using npm :
 
 ```bash
-npm install --legacy-peer-deps
+npm install opt-table --legacy-peer-deps
 ```
 
 ## Usage

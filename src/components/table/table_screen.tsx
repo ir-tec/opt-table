@@ -19,27 +19,14 @@ import { OptTableInterface, OptTableRefProps } from "./types";
 import useTable from "./hook/useTable";
 import CustomPagination from "./table_pagination";
 import { AnimatePresence, motion } from "framer-motion";
-import useAddRow from "./hook/useAddRow";
 import CollapseDetailPanel from "./collapse_detail_panel";
-import AddNewRowComponent from "./add_new_row_component";
+import { AddNewRowComponent } from "./add_new_row_component";
+import TableLoading from "./table_loading";
 
 function LocalTable<T>(
   props: OptTableInterface<T>,
-  ref: Ref<OptTableRefProps<T> | null>
+  ref: Ref<OptTableRefProps>
 ) {
-  const localRef = React.useRef<OptTableRefProps<T> | null>(null);
-  const {
-    addNewRowJandler,
-    is_create_new_row,
-    clear_row_handler,
-    newRow,
-    added_rows,
-    add_loading,
-  } = useAddRow({
-    data: props.data,
-    ref: ref || localRef,
-    options: props.options,
-  });
   const {
     current_row,
     handleRequestSort,
@@ -171,31 +158,30 @@ function LocalTable<T>(
               </TableRow>
             </TableHead>
             <TableBody>
+              <TableLoading loading={props.loading} />
+
               <AnimatePresence>
                 {/* --------------------------------------------------------------------------------------Add new row ui  */}
                 <AddNewRowComponent
+                  ref={ref}
                   key={addRowId}
                   onAccept={() => {
                     /* @ts-ignore */
                     ref?.current?.newRowDataManager();
                   }}
-                  addNewRowJandler={addNewRowJandler}
-                  add_loading={add_loading}
-                  clear_row_handler={clear_row_handler}
-                  is_create_new_row={is_create_new_row}
                   list_for_edit={props.table_head_list}
-                  newRow={newRow}
+                  options={props.options}
                 />
 
-                {[...added_rows, ...visibleRows]?.map((row: T, i) => {
+                {visibleRows?.map((row: T, i) => {
                   return (
                     <React.Fragment key={i}>
                       <motion.tr
                         style={{ fontFamily: "inherit" }}
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                        exit={{ opacity: 0 }}
+                        // initial={{ opacity: 0 }}
+                        // whileInView={{ opacity: 1 }}
+                        // transition={{ duration: 0.5 }}
+                        // exit={{ opacity: 0 }}
                       >
                         {props?.table_head_list?.map((table_row, index) => {
                           const { Render } = table_row;

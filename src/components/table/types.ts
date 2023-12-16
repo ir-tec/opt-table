@@ -19,6 +19,7 @@ export interface OptTableInterface<T> {
    */
   table_head_list: TableHeaderInterface<T>[];
   options?: options<T>;
+  loading?: boolean;
   has_pagination?: boolean;
   container_style?: React.CSSProperties;
   table_zIndex?: number;
@@ -36,7 +37,7 @@ export interface DetailPanelProps<T> {
 export interface options<T> {
   action_cell_title?: string;
   direction?: "rtl" | "ltr";
-  newDataHandler?: (data: T) => Promise<T>;
+  newDataHandler?: (data: T) => Promise<boolean>;
 }
 export type RowDataType<T> = T | {};
 
@@ -49,12 +50,11 @@ export interface CustomPaginationProps {
 }
 
 export interface useAddRowProps<T> {
-  data: T[];
   options?: options<T>;
-  ref: Ref<OptTableRefProps<T> | null>;
+  ref: Ref<OptTableRefProps>;
 }
 
-export interface OptTableRefProps<T> {
+export interface OptTableRefProps {
   addNewRow: () => void;
-  newRowDataManager?: () => Promise<T>;
+  newRowDataManager?: () => Promise<boolean>;
 }

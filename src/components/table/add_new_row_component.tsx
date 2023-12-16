@@ -1,25 +1,47 @@
-import React from "react";
+import React, { Ref } from "react";
 import CollapseAddRow from "./collapse_add_row";
 import { TableCell, TableRow, TextField } from "@mui/material";
-import { TableHeaderInterface } from "./types";
+import { OptTableRefProps, TableHeaderInterface, options } from "./types";
+import useAddRow from "./hook/useAddRow";
 interface props<T> {
-  add_loading: boolean;
-  clear_row_handler: () => void;
-  is_create_new_row: boolean;
-  addNewRowJandler: (data: { key: keyof T; value: any }) => void;
+  // add_loading: boolean;
+  // clear_row_handler: () => void;
+  // is_create_new_row: boolean;
+  // addNewRowJandler: (data: { key: keyof T; value: any }) => void;
   list_for_edit: TableHeaderInterface<T>[];
-  newRow: T;
+  // newRow: T;
+  options?: options<T>;
   onAccept: () => void;
 }
-const AddNewRowComponent = <T,>({
-  add_loading,
-  clear_row_handler,
-  is_create_new_row,
-  addNewRowJandler,
-  list_for_edit,
-  onAccept,
-  newRow,
-}: props<T>) => {
+const LocalAddNewRowComponent = <T,>(
+  {
+    // add_loading,
+    // clear_row_handler,
+    // is_create_new_row,
+    // addNewRowJandler,
+    list_for_edit,
+    onAccept,
+    options,
+  }: // newRow,
+  props<T>,
+  ref: Ref<OptTableRefProps>
+) => {
+  const localRef = React.useRef<OptTableRefProps | null>(null);
+
+  const {
+    addNewRowJandler,
+    is_create_new_row,
+    clear_row_handler,
+    newRow,
+    // added_rows,
+    add_loading,
+  } = useAddRow({
+    ref:
+      ref ||
+      localRef,
+    options: options,
+  });
+
   return (
     <TableRow>
       <CollapseAddRow
@@ -75,4 +97,5 @@ const AddNewRowComponent = <T,>({
   );
 };
 
-export default AddNewRowComponent;
+// export default AddNewRowComponent;
+export const AddNewRowComponent = React.forwardRef(LocalAddNewRowComponent);

@@ -28,6 +28,9 @@ const CollapseAddRow = ({
   is_disabled,
 }: props) => {
   const id = useId();
+  const add_button_id = useId();
+  const loading_button_id = useId();
+
   return (
     <TableCell
       key={id}
@@ -73,21 +76,23 @@ const CollapseAddRow = ({
                   width: "fit-content",
                   display: "flex",
                   alignItems: "center",
+
                   padding: "0px 0px",
                 }}
               >
                 <IconButton
                   onClick={onAccept}
                   disabled={is_disabled}
-                  style={{ position: "relative" }}
+                  style={{ position: "relative", width: 50, height: 50 }}
                 >
-                  <AnimatePresence mode="wait">
-                    {!!!loading ? (
+                  <AnimatePresence mode="sync">
+                    {!loading ? (
                       <motion.div
-                        key={`${loading}`}
+                        key={add_button_id}
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0, opacity: 0 }}
+                        style={{ position: "absolute" }}
                       >
                         <Check
                           color="success"
@@ -96,6 +101,8 @@ const CollapseAddRow = ({
                       </motion.div>
                     ) : (
                       <motion.div
+                        key={loading_button_id}
+                        style={{ position: "absolute" }}
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0, opacity: 0 }}

@@ -42,7 +42,8 @@ const CustomPagination = ({
         // position: "absolute",
         width: "100%",
         height: "hit-content",
-        maxHeight: 72,
+        maxHeight: 72, 
+        padding:"0px 8px"
       }}
     >
       <div style={{ fontFamily: "inherit" }}>

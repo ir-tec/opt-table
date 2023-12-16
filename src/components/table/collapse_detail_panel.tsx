@@ -35,9 +35,10 @@ function CollapseRowWrapper<T>({ Comp, is_open, motion_key }: props<T>) {
               animate={{
                 opacity: 1,
                 y: 0,
-                height: "fit-content",
-              }}
-              exit={{ opacity: 0, height: 0, y: 24 }}
+                height: "fit-content", 
+                // padding:"16px 8px"
+              }} 
+              exit={{ opacity: 0, height: 0, y: 24,padding:0 }}
             >
               {Comp}
             </motion.div>

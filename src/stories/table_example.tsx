@@ -6,7 +6,13 @@ import { IconButton } from "@mui/material";
 import { Add } from "@mui/icons-material";
 
 export const Table = <T,>({ data = args.data }: OptTableInterface<T>) => {
-  const ref = React.useRef<OptTableRefProps<T> | null>(null);
+  const ref = React.useRef<OptTableRefProps>(null);
+
+  const [loading, set_lodaing] = React.useState(false);
+
+  const loadder = (val: boolean) => {
+    set_lodaing(val);
+  };
   return (
     <div style={{ width: "100%", height: 500 }}>
       <IconButton
@@ -22,20 +28,16 @@ export const Table = <T,>({ data = args.data }: OptTableInterface<T>) => {
         table_head_list={args.table_head_list}
         default_sort={"test" as never}
         ref={ref}
+        loading={loading}
         options={{
-          newDataHandler: (result) =>
-            new Promise((res, rej) => {
-              setTimeout(() => {
-                res({ id: 51, ...result });
-              }, 2000);
-            }),
+          newDataHandler: (result) => fake({ set_loading: loadder }),
         }}
       />
     </div>
   );
 };
 let args: OptTableInterface<any> = {
-  default_sort: "name",
+  default_sort: "test",
   DetailsPanel: [
     { table_key: "test", Component: TestDetailsPanel },
     { table_key: "name", Component: TestDetailsPanels },
@@ -63,7 +65,7 @@ let args: OptTableInterface<any> = {
     },
   ],
   data: [
-    { test: 2, name: "Amin", id: 1 },
+    { test: 2, name: new Date().getUTCMilliseconds(), id: 1 },
     { test: 1, name: "Amin", id: 1 },
     { test: 3, name: "Amin", id: 1 },
     { test: 5, name: "Amin", id: 1 },
@@ -95,4 +97,27 @@ let args: OptTableInterface<any> = {
     { test: 1, name: "Amin", id: 1 },
     { test: 1, name: "Amin", id: 1 },
   ],
+};
+const fake = async ({
+  set_loading,
+}: {
+  set_loading: (val: boolean) => void;
+}) => {
+  try {
+    set_loading(true);
+    const t = await fetch("http://localhost:4000/category/get_category_list");
+    // await new Promise<void>((res, rej) => {
+    //   setTimeout(() => {
+    //     res();
+    //   }, 2000);
+    // });
+    
+    if (t.status === 200) return true;
+    return true;
+    // throw new Error("asasd")
+  } catch (error) {
+    throw new Error(`${error}`);
+  } finally {
+    set_loading(false);
+  }
 };
