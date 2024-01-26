@@ -1,7 +1,6 @@
 import {
   Button,
   Grid,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -11,22 +10,22 @@ import {
   TableSortLabel,
   Typography,
   Theme,
-  ButtonBase,
 } from "@mui/material";
 import React, { Ref } from "react";
-import { ExpandMore } from "@mui/icons-material";
 import { OptTableInterface, OptTableRefProps } from "./types";
 import useTable from "./hook/useTable";
 import CustomPagination from "./table_pagination";
-import { AnimatePresence, motion } from "framer-motion";
-import CollapseDetailPanel from "./collapse_detail_panel";
+import { AnimatePresence } from "framer-motion";
 import { AddNewRowComponent } from "./add_new_row_component";
 import TableLoading from "./table_loading";
+import OptTableRow from "./table_row";
 
 function LocalTable<T>(
   props: OptTableInterface<T>,
   ref: Ref<OptTableRefProps>
 ) {
+  const localRef = ref || React.useRef<OptTableRefProps | null>(null);
+
   const {
     current_row,
     handleRequestSort,
@@ -37,18 +36,22 @@ function LocalTable<T>(
     set_current_row,
     pagination_props,
     set_pagination_props,
-  } = useTable({ ...props, data: props.data });
+    is_edited,
+    set_row_to_edit,
+  } = useTable<T>({ props: { ...props, data: props.data }, ref: localRef });
   const { DetailsPanel } = props;
   let Detail = DetailsPanel?.find(
     (item, i) => item.table_key === current_row?.table_key
   );
   const Comp = Detail?.Component;
   const addRowId = React.useId();
+
   return (
     <Grid
       style={{
         transition: "0.4s",
         height: "100%",
+        fontFamily: "inherit",
         direction: props.options?.direction,
         ...props.container_style,
       }}
@@ -67,7 +70,7 @@ function LocalTable<T>(
         }}
       >
         <TableContainer style={{ maxHeight: "100%", fontFamily: "inherit" }}>
-          <Table size="small" stickyHeader sx={{}}>
+          <Table size="small" stickyHeader sx={{ fontFamily: "inherit" }}>
             <TableHead>
               <TableRow>
                 {props?.table_head_list?.map((header, i) => {
@@ -135,10 +138,11 @@ function LocalTable<T>(
                     </TableCell>
                   );
                 })}
-                {DetailsPanel?.some(
+                {(DetailsPanel?.some(
                   (item) => item.table_key === "action_cell"
-                ) && (
-                  <TableCell
+                ) ||
+                  props.options?.edit_row) && (
+                  <TableCell 
                     sx={{
                       fontFamily: "inherit",
                       boxShadow: (t: Theme) =>
@@ -152,159 +156,40 @@ function LocalTable<T>(
                       // backgroundImage:t=> `linear-gradient(0deg, ${t.palette.divider} 0%, transparent 100%)`
                     }}
                   >
-                    {props.options?.action_cell_title || "عملیات"}
+                    {props.options?.action_cell_title===undefined ? "عملیات":props.options.action_cell_title}
                   </TableCell>
                 )}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody style={{ fontFamily: "inherit" }}>
               <TableLoading loading={props.loading} />
 
               <AnimatePresence>
                 {/* --------------------------------------------------------------------------------------Add new row ui  */}
                 <AddNewRowComponent
-                  ref={ref}
+                  ref={localRef}
                   key={addRowId}
-                  onAccept={() => {
-                    /* @ts-ignore */
-                    ref?.current?.newRowDataManager();
-                  }}
                   list_for_edit={props.table_head_list}
                   options={props.options}
                 />
 
                 {visibleRows?.map((row: T, i) => {
                   return (
-                    <React.Fragment key={i}>
-                      <motion.tr
-                        style={{ fontFamily: "inherit" }}
-                        // initial={{ opacity: 0 }}
-                        // whileInView={{ opacity: 1 }}
-                        // transition={{ duration: 0.5 }}
-                        // exit={{ opacity: 0 }}
-                      >
-                        {props?.table_head_list?.map((table_row, index) => {
-                          const { Render } = table_row;
-                          return (
-                            <TableCell
-                              sx={{
-                                fontFamily: "inherit",
-                                boxShadow: (t: Theme) =>
-                                  `0px 1px 0px ${
-                                    t.palette.mode === "light"
-                                      ? "#E8E8EF"
-                                      : t.palette.background.paper
-                                  }`,
-                              }}
-                              key={index}
-                              align={table_row.align}
-                              width={table_row.width}
-                              style={{
-                                padding: table_row.has_details_penel
-                                  ? 0
-                                  : "8px",
-                                cursor: table_row.has_details_penel
-                                  ? "pointer"
-                                  : "auto",
-                                minWidth: table_row.width,
-                                ...table_row.row_style,
-                              }}
-                            >
-                              {table_row.has_details_penel ? (
-                                <ButtonBase
-                                  style={{
-                                    padding: 8,
-                                    width: "100%",
-                                    height: "100%",
-                                    cursor: table_row.has_details_penel
-                                      ? "pointer"
-                                      : "auto",
-                                    display: "flex",
-                                    justifyContent: table_row.align,
-                                    minWidth: table_row.width,
-                                    ...table_row.row_style,
-                                  }}
-                                  onClick={() => {
-                                    if (table_row.has_details_penel) {
-                                      set_current_row((pre) =>
-                                        pre?.index === i &&
-                                        pre.table_key === table_row.table_key
-                                          ? { index: -1, table_key: "" }
-                                          : {
-                                              index: i,
-                                              table_key: table_row.table_key,
-                                            }
-                                      );
-                                    }
-                                  }}
-                                >
-                                  {Render && <Render renderData={row} />}
-                                  {/* @ts-ignore */}
-                                  {!!!Render && row?.[table_row?.table_key]}
-                                </ButtonBase>
-                              ) : (
-                                <>
-                                  {Render && <Render renderData={row} />}
-                                  {/* @ts-ignore */}
-                                  {!!!Render && row?.[table_row?.table_key]}
-                                </>
-                              )}
-                            </TableCell>
-                          );
-                        })}
-                        {DetailsPanel?.some(
-                          (item) => item.table_key === "action_cell"
-                        ) && (
-                          <TableCell
-                            onClick={(e: any) => {
-                              set_current_row((pre) =>
-                                pre?.index === i
-                                  ? null
-                                  : { index: i, table_key: "action_cell" }
-                              );
-                            }}
-                            sx={{
-                              fontFamily: "inherit",
-                              boxShadow: (t: Theme) =>
-                                `0px 1px 0px ${
-                                  t.palette.mode === "light"
-                                    ? "#E8E8EF"
-                                    : t.palette.background.paper
-                                }`,
-                            }}
-                          >
-                            <IconButton>
-                              <ExpandMore
-                                sx={{
-                                  color: (t: Theme) =>
-                                    t.palette.mode === "light"
-                                      ? "black"
-                                      : "white",
-                                  transition: "0.2s",
-                                  transform: `rotate(${
-                                    i === current_row?.index ? 180 : 0
-                                  }deg)`,
-                                }}
-                              />
-                            </IconButton>
-                          </TableCell>
-                        )}
-                      </motion.tr>
-                      <TableRow>
-                        <CollapseDetailPanel
-                          is_open={current_row?.index === i}
-                          motion_key={current_row?.table_key}
-                          Comp={
-                            Comp && (
-                              <Comp
-                                is_open={current_row?.index === i}
-                                rowData={row}
-                              />
-                            )
-                          }
-                        />
-                      </TableRow>
-                    </React.Fragment>
+                    <OptTableRow
+                      Comp={Comp}
+                      has_edit_row={Boolean(props.options?.edit_row)}
+                      is_edited={is_edited}
+                      set_row_to_edit={set_row_to_edit}
+                      options={props.options}
+                      DetailPanels={DetailsPanel}
+                      current_row={current_row}
+                      index={i}
+                      row_data={row}
+                      set_current_row={set_current_row}
+                      table_head_list={props.table_head_list}
+                      key={i}
+                      ref={localRef}
+                    />
                   );
                 })}
               </AnimatePresence>

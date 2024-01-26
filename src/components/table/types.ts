@@ -1,8 +1,12 @@
-import { Ref } from "react";
+import { TextFieldProps } from "@mui/material";
+import React, { Ref } from "react";
 export interface TableHeaderInterface<T> {
   width?: string | number;
+  input_type?: "number" | "text" | "price";
+
   is_server_side?: boolean;
   has_details_penel?: boolean;
+  input_props?: TextFieldProps;
   header_style?: React.CSSProperties;
   row_style?: React.CSSProperties;
   Render?: React.FunctionComponent<{ renderData: T }>;
@@ -13,6 +17,9 @@ export interface TableHeaderInterface<T> {
   editable?: boolean;
 }
 
+// export interface RowDataType {
+//   id: string | number;
+// }
 export interface OptTableInterface<T> {
   /**
    * An array used as table header
@@ -24,7 +31,8 @@ export interface OptTableInterface<T> {
   container_style?: React.CSSProperties;
   table_zIndex?: number;
   data: T[];
-  default_sort: keyof T;
+
+  default_sort?: keyof T;
   DetailsPanel?: DetailPanelProps<T>[];
 }
 export interface DetailPanelProps<T> {
@@ -37,9 +45,18 @@ export interface DetailPanelProps<T> {
 export interface options<T> {
   action_cell_title?: string;
   direction?: "rtl" | "ltr";
+  edit_row?: boolean;
+  delete_modal_title?: React.ReactNode;
+  modal_yes_title?: string;
+  modal_no_title?: string;
+  editDataHandler?: (data: T) => Promise<boolean>;
   newDataHandler?: (data: T) => Promise<boolean>;
+  deleteDataHandler?: (data: T) => Promise<boolean>;
 }
-export type RowDataType<T> = T | {};
+// export interface RowDataType  {
+//   id:number|string
+
+// };
 
 export interface CustomPaginationProps {
   totalIncome: number;
@@ -55,6 +72,15 @@ export interface useAddRowProps<T> {
 }
 
 export interface OptTableRefProps {
-  addNewRow: () => void;
+  addNewRow?: (value?: boolean) => void;
+  setRowToEditMode?: (value?: string | number) => void;
   newRowDataManager?: () => Promise<boolean>;
+  editRowDataManager?: () => Promise<boolean>;
+  changeDetailPanelState?: ({
+    index,
+    table_key,
+  }: {
+    index: number;
+    table_key: string;
+  }) => void;
 }

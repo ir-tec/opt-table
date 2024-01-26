@@ -2,13 +2,17 @@ import { IconButton, ButtonBase } from "@mui/material";
 import React from "react";
 // import CustomPagination from "./table_pagination";
 import { ExpandMore } from "@mui/icons-material";
-import { OptTableInterface } from "./types";
+import { OptTableInterface, OptTableRefProps,  } from "./types";
 import useTable from "./hook/useTable";
 import CustomPagination from "./table_pagination";
 import { AnimatePresence, motion } from "framer-motion";
 import "../../styles/styles.css";
 import sort_icon from "../../assets/img/sort-icon.svg";
-export function MotionTable<T>(props: OptTableInterface<T>) {
+export function MotionTable<T>(
+  props: OptTableInterface<T>
+) {
+  const localRef = React.useRef<OptTableRefProps | null>(null);
+
   const {
     current_row,
     handleRequestSort,
@@ -19,7 +23,7 @@ export function MotionTable<T>(props: OptTableInterface<T>) {
     set_current_row,
     pagination_props,
     set_pagination_props,
-  } = useTable(props);
+  } = useTable<T>({ props: props, ref: localRef });
   const { DetailsPanel } = props;
   let Detail = DetailsPanel?.find(
     (item, i) => item.table_key === current_row?.table_key
@@ -34,8 +38,8 @@ export function MotionTable<T>(props: OptTableInterface<T>) {
 
           direction: props.options?.direction,
           ...props.container_style,
-          display: "flex", 
-          flexDirection:"column",
+          display: "flex",
+          flexDirection: "column",
           padding: 0,
         }}
       >
@@ -52,8 +56,6 @@ export function MotionTable<T>(props: OptTableInterface<T>) {
             position: "relative",
           }}
         >
-       
-
           <div
             style={{
               maxHeight: "100%",
@@ -62,10 +64,7 @@ export function MotionTable<T>(props: OptTableInterface<T>) {
               position: "relative",
             }}
           >
-            <table
-              className="table-fixed"
-              style={{  }}
-            >
+            <table className="table-fixed" style={{}}>
               <thead style={{}}>
                 <tr style={{}}>
                   {props?.table_head_list?.map((header, i) => {

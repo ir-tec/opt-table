@@ -7,7 +7,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableRow,
+
 } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useId } from "react";
@@ -65,10 +65,8 @@ const CollapseAddRow = ({
               exit={{ opacity: 0, height: 0, y: 24 }}
             >
               <TableContainer style={{ padding: 0 }}>
-                <Table size="small" style={{ padding: 0 }}>
-                  <TableBody style={{ padding: 0 }}>
-                    <TableRow style={{ padding: 0 }}>{Comp}</TableRow>
-                  </TableBody>
+                <Table size="small" style={{ padding: 0 }} stickyHeader>
+                  <TableBody style={{ padding: 0, }}>{Comp}</TableBody>
                 </Table>
               </TableContainer>
               <motion.div

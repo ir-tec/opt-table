@@ -4,10 +4,26 @@ import { useAddRowProps } from "../types";
 function useAddRow<T>(props: useAddRowProps<T>) {
   // const [added_rows, set_added_row] = React.useState<T[]>([]);
   const [add_loading, set_add_loading] = React.useState<boolean>(false);
+
+  const [show_error, set_show_error] = React.useState<{
+    message: string;
+    input_index: null | number;
+  }>({
+    message: "",
+    input_index: null,
+  });
+
+  const openShowError = (index: number | null, message: string) => {
+    set_show_error({ input_index: index, message });
+  };
+  const closeShowError = (index: number, message: string) => {
+    set_show_error({ input_index: null, message: "" });
+  };
+
   const [is_create_new_row, set_is_create_new_row] =
     React.useState<boolean>(false);
   const [newRow, addNewRow] = React.useState<T>({} as T);
-  const addNewRowJandler = (data: { key: keyof T; value: any }) => {
+  const addNewRowHandler = (data: { key: keyof T; value: any }) => {
     addNewRow((pre) => ({ ...pre, [data.key]: data.value }));
   };
 
@@ -15,46 +31,37 @@ function useAddRow<T>(props: useAddRowProps<T>) {
     set_is_create_new_row(false);
     addNewRow({} as T);
   };
+  // const refContext = useContext(sharedMethodContext);
 
   useImperativeHandle(
     props.ref,
     () => ({
-      addNewRow: () => {
-        set_is_create_new_row((pre) => !pre);
-      },
-      newRowDataManager: () => {
-        if (props.options?.newDataHandler)
-          return new Promise(async (res, rej) => {
-            if (!!!props.options?.newDataHandler)
-              return rej(`add newDataHandler method to props.options`);
-            try {
-              set_add_loading(true);
-              let { newDataHandler } = props?.options;
-              let is_done = await newDataHandler(newRow);
-              addNewRow((pre) => ({} as T));
-              res(is_done);
-            } catch (error) {
-              rej(false);
-            } finally {
-              set_add_loading(false);
-            }
-          });
-        return new Promise((res, rej) => {
-          rej(`Provide the newDataHandler method on options property`);
-        });
+      // ...refContext,
+      addNewRow: (value) => { 
+        
+        if (value === undefined) { 
+          
+          /* @ts-ignore */
+          props?.ref?.current?.setRowToEditMode(-1);
+        }
+        set_is_create_new_row((pre) => (value !== undefined ? value : !pre));
       },
     }),
-    [newRow]
+    []
   );
 
   return {
-    addNewRowJandler,
+    addNewRowHandler,
     is_create_new_row,
     set_is_create_new_row,
     // added_rows,
     clear_row_handler,
     newRow,
     add_loading,
+    openShowError,
+    closeShowError,
+    show_error,
+    set_add_loading,
   };
 }
 
