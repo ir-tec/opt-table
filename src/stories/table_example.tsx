@@ -60,7 +60,6 @@ export const Table = <T,>({ data = args.data }: OptTableInterface<T>) => {
               });
           },
           newDataHandler: (result) => {
-            console.log(result);
 
             return fake({ set_loading: loadder });
           },
@@ -151,7 +150,7 @@ const fake = async ({
     // const t = await fetch("http://localhost:4000/category/get_category_list");
     await new Promise<void>((res, rej) => {
       setTimeout(() => {
-        rej();
+        res();
       }, 2000);
     });
 

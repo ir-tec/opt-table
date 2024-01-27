@@ -15,7 +15,6 @@ import React, { Ref } from "react";
 import { OptTableInterface, OptTableRefProps } from "./types";
 import useTable from "./hook/useTable";
 import CustomPagination from "./table_pagination";
-import { AnimatePresence } from "framer-motion";
 import { AddNewRowComponent } from "./add_new_row_component";
 import TableLoading from "./table_loading";
 import OptTableRow from "./table_row";
@@ -142,7 +141,7 @@ function LocalTable<T>(
                   (item) => item.table_key === "action_cell"
                 ) ||
                   props.options?.edit_row) && (
-                  <TableCell 
+                  <TableCell
                     sx={{
                       fontFamily: "inherit",
                       boxShadow: (t: Theme) =>
@@ -156,15 +155,22 @@ function LocalTable<T>(
                       // backgroundImage:t=> `linear-gradient(0deg, ${t.palette.divider} 0%, transparent 100%)`
                     }}
                   >
-                    {props.options?.action_cell_title===undefined ? "عملیات":props.options.action_cell_title}
+                    {props.options?.action_cell_title === undefined
+                      ? "عملیات"
+                      : props.options.action_cell_title}
                   </TableCell>
                 )}
               </TableRow>
             </TableHead>
-            <TableBody style={{ fontFamily: "inherit" }}>
+            <TableBody
+              style={{
+                fontFamily: "inherit",
+                border: "unset",
+               
+              }}
+            >
               <TableLoading loading={props.loading} />
 
-              <AnimatePresence>
                 {/* --------------------------------------------------------------------------------------Add new row ui  */}
                 <AddNewRowComponent
                   ref={localRef}
@@ -187,12 +193,11 @@ function LocalTable<T>(
                       row_data={row}
                       set_current_row={set_current_row}
                       table_head_list={props.table_head_list}
-                      key={i}
+                      key={`${i * (i + 1)}`}
                       ref={localRef}
                     />
                   );
                 })}
-              </AnimatePresence>
             </TableBody>
           </Table>
         </TableContainer>

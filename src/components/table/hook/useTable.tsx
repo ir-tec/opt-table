@@ -86,7 +86,7 @@ function useTable<T>({ props, ref }: useTAbleProps<T>) {
                 res(result);
               })
               .catch((err) => {
-                res(false);
+                res(err);
               })
               .finally(() => {
                 // set_add_loading(false);

@@ -39,10 +39,13 @@ const LocalAddNewRowComponent = <T,>(
           /* @ts-ignore */
           ref?.current
             ?.newRowDataManager(newRow)
-            ?.then(() => {
-              clear_row_handler();
+            ?.then((res: any) => {
+              if (res === true) {
+
+                clear_row_handler();
+              }
             })
-            .catch(() => {})
+            .catch((err: any) => {})
             .finally(() => {
               set_add_loading(false);
             });
