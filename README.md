@@ -5,6 +5,9 @@ opt-table is a versatile and customizable React table package built with [Materi
 ## Features
 
 - **َAdd Rows:** Add new Row will be implemented by providing a Promise to options for newDataHandler method an accessing the refs of table .
+- **َUpdate Rows:** Edit Row will be implemented by providing a Promise to options for editDataHandler  and add the edit_row flag to options property of table .
+
+- **َDelete Rows:** Delete Row will be implemented by providing a Promise to options for deleteDataHandler and add the edit_row flag to options property of table .
 
 - **Pagination:** Easily implement pagination with options for the number of rows per page and navigation controls.
 
