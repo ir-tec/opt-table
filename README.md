@@ -56,15 +56,30 @@ type optionType<T> = {
   // Set The direction of the table
   direction: "rtl" | "ltr",
   //
-  // By accesing this method from ref an calling it .table will go into add new row mode
+  // PROVIDE THIS METHOD FOR ACCESSING NEW DATA
   newDataHandler: (result: T) => Promise<boolean>,
+  //
+  //  PROVIDE THIS METHOD FOR ACCESSING EDITED DATA
+  editDataHandler: (result: T) => Promise<boolean>,
+  //  PROVIDE THIS METHOD FOR ACCESSING DELETED DATA
+  deleteDataHandler: (result: T) => Promise<boolean>,
+  //
+  // FOR ROWS TO HAVE EDIT AND DELETE iCONS NEED TO ADD THIS PROPPS
+  edit_row?: boolean,
+  delete_modal_title?: React.ReactNode,
+  //
+  // THE ACEEPT TITLE FOR DELETEING THE ROW MODAL
+  modal_yes_title?: string,
+  //
+  // THE CANCEL TITLE FOR DELETEING THE ROW MODAL
+  modal_no_title?: string,
 };
 ```
+
 - **ref:** to access table methods :
 
 ```jsx
 type OptTableRefProps<T> = {
-
   //
   // By accesing this method from ref an calling it , table will toggles between add new rows mode
   addNewRow: () => Void,
