@@ -4,6 +4,7 @@ import { useAddRowProps } from "../types";
 const useEditRow = <T,>(props: useAddRowProps<T>) => {
   const [edit_loading, set_edit_loading] = React.useState<boolean>(false);
   const [open_modal, set_open_modal] = React.useState(false);
+// console.log("asd");
 
   const [editedRow, setEditRow] = React.useState<T>({} as T);
   const editRowHandler = (data: { key: keyof T; value: any }) => {

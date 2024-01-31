@@ -46,7 +46,8 @@ export const Table = <T,>({ data = args.data }: OptTableInterface<T>) => {
         ref={ref}
         loading={loading}
         options={{
-          action_cell_title: "", modal_no_title:"asdas",
+          action_cell_title: "",
+          modal_no_title: "asdas",
           edit_row: true,
           delete_modal_title: <h3>آیا از حذف مطمعمن هستید ؟</h3>,
           deleteDataHandler: (data) => {
@@ -60,7 +61,6 @@ export const Table = <T,>({ data = args.data }: OptTableInterface<T>) => {
               });
           },
           newDataHandler: (result) => {
-
             return fake({ set_loading: loadder });
           },
           editDataHandler: (result) => {
@@ -157,8 +157,7 @@ const fake = async ({
     // if (t.status !== 200) throw new Error(`Not done`);
     return true;
     // throw new Error("asasd")
-  } catch (error) { 
-    
+  } catch (error) {
     throw new Error(`${error}`);
   } finally {
     set_loading(false);

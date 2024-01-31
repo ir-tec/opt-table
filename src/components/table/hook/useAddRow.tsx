@@ -28,7 +28,7 @@ function useAddRow<T>(props: useAddRowProps<T>) {
   };
 
   const clear_row_handler = () => {
-    set_is_create_new_row(false);
+    // set_is_create_new_row(false);
     addNewRow({} as T);
   };
   // const refContext = useContext(sharedMethodContext);

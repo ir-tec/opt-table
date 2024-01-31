@@ -55,7 +55,8 @@ const CollapseAddRow = ({
           {is_open && (
             <motion.div
               key={`${is_open}`}
-              initial={{ height: 0, opacity: 0, y: 24 }}
+              initial={{ height: 0, opacity: 0, y: 24 }}  
+              transition={{duration:0.36}}
               animate={{
                 opacity: 1,
                 y: 0,

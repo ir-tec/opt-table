@@ -6,8 +6,8 @@ import {
   TextField,
   Theme,
 } from "@mui/material";
-import React, { Ref, memo } from "react";
-import { motion } from "framer-motion";
+import React, { Ref, memo, useContext } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   DetailPanelProps,
   OptTableRefProps,
@@ -21,31 +21,14 @@ import { BootstrapTooltip } from "./error_tooltip";
 import { check_input_type } from "./add_new_row_component";
 import useEditRow from "./hook/useEditRow";
 import DeleteMenuModal from "../delete_modal";
+import { tableContext } from "../../context/table_context";
 
 interface propsType<T> {
   table_head_list: TableHeaderInterface<T>[];
 
-  is_edited?: string | number | null;
-  index: number;
   has_edit_row: boolean;
-  current_row: {
-    index: number | string;
-    table_key: string;
-  } | null;
-  Comp:
-    | React.FunctionComponent<{
-        is_open: boolean;
-        rowData: T | undefined;
-      }>
-    | undefined;
-  set_current_row: React.Dispatch<
-    React.SetStateAction<{
-      index: number | string;
-      table_key: string;
-    } | null>
-  >;
+
   options?: options<T>;
-  set_row_to_edit: (id: string | number) => void;
   row_data: T;
   DetailPanels: DetailPanelProps<T>[] | undefined;
 }
@@ -53,18 +36,12 @@ interface propsType<T> {
 const OptTableRow = <T,>(props: propsType<T>, ref: Ref<OptTableRefProps>) => {
   let {
     table_head_list,
-    index,
-    is_edited,
+
     row_data,
     has_edit_row,
-    set_current_row,
-    set_row_to_edit,
-    current_row,
     DetailPanels,
     options,
-    Comp,
   } = props;
-
   const {
     openShowError,
     show_error,
@@ -76,205 +53,20 @@ const OptTableRow = <T,>(props: propsType<T>, ref: Ref<OptTableRefProps>) => {
     open_modal,
     set_open_modal,
   } = useEditRow({ ref: ref, options });
+  const { is_edited, set_row_to_edit, current_row, set_current_row } =
+    useContext(tableContext);
   /* @ts-ignore */
   let render_index = is_edited === row_data.id;
 
+  let Detail = DetailPanels?.find(
+    (item, i) => item.table_key === current_row?.table_key
+  );
+  const Comp = Detail?.Component;
   return (
-    <React.Fragment>
-      {/* ----------------------------------------------- row Part */}
-        {!render_index && (
-          <motion.tr
-            style={{
-              fontFamily: "inherit",
-              border: "unset",
-              overflowX: "hidden",
-              width: "100%",
-            }}
-            initial={{ opacity: 0 }}
-            /* @ts-ignore */
-            // key={`${row_data.id}+${index}`}
-            // key={`${row_data.id}`}
-            whileInView={{
-              opacity: 1,
-            }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: "linear" }}
-          >
-            {table_head_list?.map((table_row, i) => {
-              const { Render } = table_row;
-              return (
-                <TableCell
-                  sx={{
-                    fontFamily: "inherit",
-                    // boxShadow: (t: Theme) =>
-                    //   `0px 0.2px 0px ${
-                    //     t.palette.mode === "light"
-                    //       ? "#E8E8EF"
-                    //       : t.palette.background.paper
-                    //   }`,
-                  }}
-                  key={i}
-                  align={table_row.align}
-                  width={table_row.width}
-                  style={{
-                    padding: table_row.has_details_penel ? 0 : "8px",
-                    cursor: table_row.has_details_penel ? "pointer" : "auto",
-                    minWidth: table_row.width,
-                    ...table_row.row_style,
-                  }}
-                >
-                  {table_row.has_details_penel ? (
-                    <ButtonBase
-                      style={{
-                        padding: 8,
-                        width: "100%",
-                        height: "100%",
-                        cursor: table_row.has_details_penel
-                          ? "pointer"
-                          : "auto",
-                        display: "flex",
-                        fontFamily: "inherit",
-                        justifyContent: table_row.align,
-                        minWidth: table_row.width,
-                        ...table_row.row_style,
-                      }}
-                      onClick={() => {
-                        if (table_row.has_details_penel) {
-                          set_row_to_edit(-1);
-                          set_current_row((pre) =>
-                            /* @ts-ignore */
-                            pre?.index === row_data.id &&
-                            pre?.table_key === table_row.table_key
-                              ? { index: -1, table_key: "" }
-                              : {
-                                  /* @ts-ignore */
-                                  index: row_data.id,
-                                  table_key: table_row.table_key,
-                                }
-                          );
-                        }
-                      }}
-                    >
-                      {Render && <Render renderData={row_data} />}
-                      {/* @ts-ignore */}
-                      {!!!Render && row_data?.[table_row?.table_key]}
-                    </ButtonBase>
-                  ) : (
-                    <>
-                      {Render && <Render renderData={row_data} />}
-                      {/* @ts-ignore */}
-                      {!!!Render && row_data?.[table_row?.table_key]}
-                    </>
-                  )}
-                </TableCell>
-              );
-            })}
-            {(DetailPanels?.some((item) => item.table_key === "action_cell") ||
-              has_edit_row) && (
-              <TableCell
-                sx={{
-                  minWidth: 120,
-                  fontFamily: "inherit",
-                  // boxShadow: (t: Theme) =>
-                  //   `0px 0.2px 0px ${
-                  //     t.palette.mode === "light"
-                  //       ? "#E8E8EF"
-                  //       : t.palette.background.paper
-                  //   }`,
-                }}
-              >
-                {has_edit_row && (
-                  <>
-                    <IconButton
-                      onClick={() => {
-                        set_current_row({ index: -1, table_key: "" });
-                        setEditRow(row_data);
-                        /* @ts-ignore */
-                        set_row_to_edit(row_data.id);
-                      }}
-                    >
-                      <Edit
-                        sx={{
-                          color: (t) =>
-                            t.palette.mode === "dark"
-                              ? t.palette.secondary.main
-                              : t.palette.primary.main,
-                        }}
-                      />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => {
-                        setEditRow(row_data);
-                        set_open_modal(true);
-                      }}
-                    >
-                      <Delete
-                        sx={{
-                          color: (t) =>
-                            t.palette.mode === "dark"
-                              ? t.palette.secondary.main
-                              : t.palette.primary.main,
-                        }}
-                      />
-                    </IconButton>
-                    <DeleteMenuModal
-                      options={options}
-                      title_component={options?.delete_modal_title}
-                      onYesClick={() => {
-                        /*@ts-ignore*/
-                        options
-                          ?.deleteDataHandler(row_data)
-                          .then((res: any) => {
-                            set_open_modal(false);
-                          })
-                          .catch((err: any) => {});
-                      }}
-                      props={{
-                        open: open_modal,
-                        onClose: () => {
-                          set_open_modal(false);
-                        },
-                      }}
-                    />
-                  </>
-                )}
-
-                {/* -------------------------------------------------- arrow for action cell */}
-                {DetailPanels?.some(
-                  (item) => item.table_key === "action_cell"
-                ) && (
-                  <IconButton
-                    onClick={(e: any) => {
-                      set_current_row((pre) =>
-                        /* @ts-ignore */
-                        pre?.index === row_data.id
-                          ? null
-                          : /* @ts-ignore */
-                            { index: row_data.id, table_key: "action_cell" }
-                      );
-                    }}
-                  >
-                    <ExpandMore
-                      sx={{
-                        color: (t: Theme) =>
-                          t.palette.mode === "light" ? "black" : "white",
-                        transition: "0.2s",
-                        transform: `rotate(${
-                          index === current_row?.index ? 180 : 0
-                        }deg)`,
-                      }}
-                    />
-                  </IconButton>
-                )}
-              </TableCell>
-            )}
-          </motion.tr>
-        )}
-
-      {/* ----------------------------------------------- edit Part */}
-      <TableRow sx={{ border: "unset" }}>
+    <React.Fragment> 
+          <motion.tr style={{ border: "unset" }}>
         <CollapseAddRow
-          onCancel={() => set_row_to_edit(-1)}
+          onCancel={() => set_row_to_edit?.(-1)}
           onAccept={() => {
             set_edit_loading(true);
             /* @ts-ignore */
@@ -282,7 +74,7 @@ const OptTableRow = <T,>(props: propsType<T>, ref: Ref<OptTableRefProps>) => {
               ?.editRowDataManager(editedRow)
               ?.then((res: any) => {
                 if (res === true) {
-                  set_row_to_edit(-1);
+                  set_row_to_edit?.(-1);
                 }
               })
               ?.catch((err: any) => {})
@@ -385,7 +177,202 @@ const OptTableRow = <T,>(props: propsType<T>, ref: Ref<OptTableRefProps>) => {
           } /* @ts-ignore */
           is_open={row_data.id === is_edited}
         />
-      </TableRow>
+      </motion.tr>
+      {/* ----------------------------------------------- row Part */}
+      <AnimatePresence mode="wait" initial={false}>
+        {!render_index && (
+          <motion.tr
+            key={`${render_index}`}
+            style={{
+              fontFamily: "inherit",
+              border: "unset",
+              overflowY: "hidden",
+              width: "100%",
+            }}
+            initial={{ opacity: 0, y: 24 }}
+            transition={{ duration: 0.2 }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            exit={{ opacity: 0, y: 24 }}
+          >
+            {table_head_list?.map((table_row, i) => {
+              const { Render } = table_row;
+              return (
+                <TableCell
+                  sx={{
+                    fontFamily: "inherit",
+                  }}
+                  key={i}
+                  align={table_row.align}
+                  width={table_row.width}
+                  style={{
+                    padding: table_row.has_details_penel ? 0 : "8px",
+                    cursor: table_row.has_details_penel ? "pointer" : "auto",
+                    minWidth: table_row.width,
+                    ...table_row.row_style,
+                  }}
+                >
+                  {table_row.has_details_penel ? (
+                    <ButtonBase
+                      style={{
+                        padding: 8,
+                        width: "100%",
+                        height: "100%",
+                        cursor: table_row.has_details_penel
+                          ? "pointer"
+                          : "auto",
+                        display: "flex",
+                        fontFamily: "inherit",
+                        justifyContent: table_row.align,
+                        minWidth: table_row.width,
+                        ...table_row.row_style,
+                      }}
+                      onClick={() => {
+                        if (table_row.has_details_penel) {
+                          if (!!is_edited) {
+                            set_row_to_edit?.(-1);
+                          }
+                          set_current_row?.((pre) =>
+                            /* @ts-ignore */
+                            pre?.index === row_data.id &&
+                            pre?.table_key === table_row.table_key
+                              ? { index: -1, table_key: "" }
+                              : {
+                                  /* @ts-ignore */
+                                  index: row_data.id,
+                                  table_key: table_row.table_key,
+                                }
+                          );
+                        }
+                      }}
+                    >
+                      {Render && <Render renderData={row_data} />}
+                      {/* @ts-ignore */}
+                      {!!!Render && row_data?.[table_row?.table_key]}
+                    </ButtonBase>
+                  ) : (
+                    <>
+                      {Render && <Render renderData={row_data} />}
+                      {/* @ts-ignore */}
+                      {!!!Render && row_data?.[table_row?.table_key]}
+                    </>
+                  )}
+                </TableCell>
+              );
+            })}
+            {(DetailPanels?.some((item) => item.table_key === "action_cell") ||
+              has_edit_row) && (
+              <TableCell
+                sx={{
+                  minWidth: 120,
+                  fontFamily: "inherit",
+                  // boxShadow: (t: Theme) =>
+                  //   `0px 0.2px 0px ${
+                  //     t.palette.mode === "light"
+                  //       ? "#E8E8EF"
+                  //       : t.palette.background.paper
+                  //   }`,
+                }}
+              >
+                {has_edit_row && (
+                  <>
+                    <IconButton
+                      onClick={() => {
+                        set_current_row?.(null);
+                        setEditRow(row_data);
+                        /* @ts-ignore */
+                        set_row_to_edit(row_data.id);
+                      }}
+                    >
+                      <Edit
+                        sx={{
+                          color: (t) =>
+                            t.palette.mode === "dark"
+                              ? t.palette.secondary.main
+                              : t.palette.primary.main,
+                        }}
+                      />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        setEditRow(row_data);
+                        set_open_modal(true);
+                      }}
+                    >
+                      <Delete
+                        sx={{
+                          color: (t) =>
+                            t.palette.mode === "dark"
+                              ? t.palette.secondary.main
+                              : t.palette.primary.main,
+                        }}
+                      />
+                    </IconButton>
+                    <DeleteMenuModal
+                      options={options}
+                      title_component={options?.delete_modal_title}
+                      onYesClick={() => {
+                        /*@ts-ignore*/
+                        options
+                          ?.deleteDataHandler(row_data)
+                          .then((res: any) => {
+                            set_open_modal(false);
+                          })
+                          .catch((err: any) => {});
+                      }}
+                      props={{
+                        open: open_modal,
+                        onClose: () => {
+                          set_open_modal(false);
+                        },
+                      }}
+                    />
+                  </>
+                )}
+
+                {/* -------------------------------------------------- arrow for action cell */}
+                {DetailPanels?.some(
+                  (item) => item.table_key === "action_cell"
+                ) && (
+                  <IconButton
+                    onClick={(e: any) => {
+                      set_current_row?.((pre) =>
+                        /* @ts-ignore */
+                        pre?.index === row_data.id &&
+                        pre?.table_key === "action_cell"
+                          ? null
+                          : /* @ts-ignore */
+                            { index: row_data.id, table_key: "action_cell" }
+                      );
+                    }}
+                  >
+                    <ExpandMore
+                      sx={{
+                        color: (t: Theme) =>
+                          t.palette.mode === "light" ? "black" : "white",
+                        transition: "0.2s",
+                        transform: `rotate(${
+                          /* @ts-ignore */
+
+                          row_data.id === current_row?.index &&
+                          current_row?.table_key === "action_cell"
+                            ? 180
+                            : 0
+                        }deg)`,
+                      }}
+                    />
+                  </IconButton>
+                )}
+              </TableCell>
+            )}
+          </motion.tr>
+        )}
+        {/* ----------------------------------------------- edit Part */}
+      </AnimatePresence>
+  
+
       {/* ----------------------------------------------- Details panels */}
       <TableRow sx={{ border: "unset" }}>
         <CollapseRowWrapper

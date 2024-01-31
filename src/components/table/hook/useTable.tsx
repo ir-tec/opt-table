@@ -1,10 +1,11 @@
-import React, { Ref, useImperativeHandle } from "react";
+import React, { Ref, useContext, useImperativeHandle } from "react";
 import {
   CustomPaginationProps,
   OptTableInterface,
   OptTableRefProps,
 } from "../types";
 import { getComparator, stableSort } from "../table_utils";
+import { tableContext } from "../../../context/table_context";
 type useTAbleProps<T> = {
   props: OptTableInterface<T>;
   ref: Ref<OptTableRefProps>;
@@ -14,20 +15,8 @@ function useTable<T>({ props, ref }: useTAbleProps<T>) {
   const [orderBy, setOrderBy] = React.useState<keyof T | undefined>(
     props.default_sort
   );
-
-  const [is_edited, set_is_edited] = React.useState<number | string | null>(
-    null
-  );
-  const set_row_to_edit = (id: string | number) => {
-    if (is_edited === id) return set_is_edited(null);
-    set_is_edited(id);
-    /* @ts-ignore */
-    ref?.current?.addNewRow(false);
-  };
-  const [current_row, set_current_row] = React.useState<{
-    index: number | string;
-    table_key: string;
-  } | null>(null);
+  const { set_current_row, current_row, set_is_edited } =
+    useContext(tableContext);
 
   useImperativeHandle(
     ref,
@@ -42,12 +31,12 @@ function useTable<T>({ props, ref }: useTAbleProps<T>) {
         table_key: string;
       }) => {
         if (index === current_row?.index && table_key === current_row.table_key)
-          return set_current_row({ index: -1, table_key: "" });
+          return set_current_row?.({ index: -1, table_key: "" });
 
-        return set_current_row({ index, table_key });
+        return set_current_row?.({ index, table_key });
       },
       setRowToEditMode: (value: string | number) => {
-        set_is_edited(value);
+        set_is_edited?.(value);
       },
       editRowDataManager: (data: T) => {
         if (props.options?.editDataHandler)
@@ -59,9 +48,7 @@ function useTable<T>({ props, ref }: useTAbleProps<T>) {
 
             editDataHandler(data)
               .then((result) => {
-                
-                res(result); 
-                
+                res(result);
               })
               .catch((err) => {
                 res(false);
@@ -112,8 +99,9 @@ function useTable<T>({ props, ref }: useTAbleProps<T>) {
     property: keyof T
   ) => {
     const isAsc = orderBy === property && order === "asc";
-    set_current_row(null);
-    set_is_edited(-1);
+
+    set_current_row?.(null);
+    set_is_edited?.(null);
     // startTransition(() => {
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
@@ -147,16 +135,14 @@ function useTable<T>({ props, ref }: useTAbleProps<T>) {
 
   return {
     order,
-    current_row,
+
     handleRequestSort,
     visibleRows: props.has_pagination ? paginatedRow : visibleRows,
     orderBy,
-    set_current_row,
+
     pagination_props,
     set_pagination_props,
     total_data: props.data?.length,
-    is_edited,
-    set_row_to_edit,
   };
 }
 

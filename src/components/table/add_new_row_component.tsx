@@ -33,6 +33,8 @@ const LocalAddNewRowComponent = <T,>(
         loading={add_loading}
         onCancel={() => {
           clear_row_handler();
+          /* @ts-ignore */
+          ref?.current?.addNewRow(false);
         }}
         onAccept={() => {
           set_add_loading(true);
@@ -41,7 +43,6 @@ const LocalAddNewRowComponent = <T,>(
             ?.newRowDataManager(newRow)
             ?.then((res: any) => {
               if (res === true) {
-
                 clear_row_handler();
               }
             })
